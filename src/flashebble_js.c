@@ -21,7 +21,7 @@ static char content_buffer[CONTENT_SIZE];
 bool front = false;
 bool menu = false;
 static int id;
-
+static int deck_id = 0;
 
 //added for logo
 static BitmapLayer *image_layer;
@@ -34,8 +34,18 @@ enum {
 };
 
 static void menu_select_callback(int index, void *ctx) {
-    menu_item_0[index].subtitle = "You've hit select here!";
+    deck_id = index;
+    id = 0;
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    Tuplet value = TupletInteger(2, id);
+    Tuplet value2 = TupletInteger(3, deck_id);
+    dict_write_tuplet(iter, &value);
+    dict_write_tuplet(iter, &value2);
+    app_message_outbox_send();
+    
     layer_mark_dirty(simple_menu_layer_get_layer(menu_layer));
+    window_stack_pop(true);
 }
 void process_tuple(Tuple *t){
     int key = t -> key;
@@ -95,7 +105,9 @@ void up_click_handler(ClickRecognizerRef recognizer, void *context)
     
     // doesn't matter what to send, just trigger the callback
     Tuplet value = TupletInteger(2, id);
+    Tuplet value2 = TupletInteger(3, deck_id);
     dict_write_tuplet(iter, &value);
+    dict_write_tuplet(iter, &value2);
     if(id > 0) id--;
     app_message_outbox_send();
 }
@@ -107,7 +119,9 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
     
     // doesn't matter what to send, just trigger the callback
     Tuplet value = TupletInteger(2, id);
+    Tuplet value2 = TupletInteger(3, deck_id);
     dict_write_tuplet(iter, &value);
+    dict_write_tuplet(iter, &value2);
     id++;
     app_message_outbox_send();
 }

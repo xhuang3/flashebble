@@ -11,7 +11,8 @@
   "appKeys": {
     "TITLE_KEY": 0,
     "CONTENT_KEY": 1,
-    "ID": 2
+    "ID": 2,
+    "DECK_ID": 3
   },
   "resources": {
     "media": [

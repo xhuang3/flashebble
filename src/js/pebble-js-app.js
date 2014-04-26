@@ -25,7 +25,7 @@
  */
 var deck_Num = 0;
 
-var vocabs = [
+var SAT_Vocabs = [
     ["Abhor", "hate"],
     ["Bigot", "narrow-minded"],
     ["Counterfeit", "fake; false"],
@@ -51,16 +51,16 @@ var vocabs = [
 
 
 var GRE_Vocabs = [
-    ["Abhor", "hate"],
-    ["Bigot", "narrow-minded"],
-    ["Counterfeit", "fake; false"],
-    ["Enfranchise", "give voting rights"],
-    ["Hamper", "hinder; obstruct"],
-    ["Kindle", "to start a fire"],
-    ["Noxious", "harmful; poisonous; lethal"],
-    ["Placid", "calm; peaceful"],
-    ["Remuneration", "payment for work done"],
-    ["Talisman", "lucky charm"],
+    ["Greword1", "hate"],
+    ["Greword2", "narrow-minded"],
+    ["Greword3", "fake; false"],
+    ["Greword4", "give voting rights"],
+    ["Greword5", "hinder; obstruct"],
+    ["Greword6", "to start a fire"],
+    ["Greword7", "harmful; poisonous; lethal"],
+    ["Greword8", "calm; peaceful"],
+    ["Greword9", "payment for work done"],
+    ["Greword10", "lucky charm"],
 ];
 
 var notes = [
@@ -111,9 +111,17 @@ function get_cards() {
 }
 
 function cloud_to_pebble(id) {
-    var title = vocabs[id][0];
-    var content = vocabs[id][1];
-    id++;
+    var title;
+    var content;
+    if(deck_Num == 0){
+        console.log("SAT DICT");
+        title = SAT_Vocabs[id][0];
+        content = SAT_Vocabs[id][1];
+    }else if(deck_Num == 1){
+        console.log("GRE DICT");
+        title = GRE_Vocabs[id][0];
+        content = GRE_Vocabs[id][1];
+    }
     var dict = {"TITLE_KEY":title, "CONTENT_KEY":content};
     Pebble.sendAppMessage(dict);
 }
@@ -128,8 +136,10 @@ Pebble.addEventListener("ready",
 // Set callback for appmessage events
 Pebble.addEventListener("appmessage",
                         function(e) {
-                            console.log("appmessage: id" + JSON.stringify(e.payload.ID));
+                            console.log("appmessage: id " + JSON.stringify(e.payload.ID));
+                            console.log("deck id " + JSON.stringify(e.payload.DECK_ID));
                             if (e.payload){
+                                deck_Num = e.payload.DECK_ID;
                                 cloud_to_pebble(e.payload.ID);
                             }
                         }
