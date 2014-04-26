@@ -51,13 +51,48 @@ var notes = [
     ["Page1", "This is a reminder for XXXX"]
 ]
 
-function HTTPGET(url) {
+var username = "test";
+var password = "123456";
+var login_obj;
+var id;
+var url = "http://fengpanhome.com:8080/";
+var deckid = "17b94e854f64886d";
+
+function login_user(){
     var req = new XMLHttpRequest();
-    req.open("GET", url, false);
-    req.send(null);
+    req.open("POST", url + "users/login");
+    req.send("username=test&password=123456");
+    req.onreadystatechange = function () {
+        console.log(req.readyState);
+        if(req.readyState == 4){
+            login_obj = JSON.parse(req.responseText);
+            id = login_obj.id;
+            console.log(id);
+            console.log("getting cards");
+            get_cards()
+        }   
+    }
     return req.responseText;
 }
 
+
+function get_cards() {
+    console.log("start getting cards");
+    var req = new XMLHttpRequest();
+    req.open("GET", url + "cards", true);
+    var cookieString = "id=" + id;
+    console.log(cookieString);
+    req.setRequestHeader('Cookie', cookieString);
+    req.setRequestHeader('deckid', cookieString);
+    req.onreadystatechange = function () {
+        console.log("get_cards: ready state "+req.readyState);
+        if(req.readyState == 4){
+            //login_obj = JSON.parse(req.responseText);
+            console.log(req.responseText);
+        }   
+    }
+    req.send();
+}
 
 function cloud_to_pebble(id) {
     var title = vocabs[id][0];
@@ -70,16 +105,18 @@ function cloud_to_pebble(id) {
 // Set callback for the app ready event
 Pebble.addEventListener("ready",
                         function(e) {
+                            console.log("Ready: start login\n");
+                            login_user();
+                            
                         });
 
 // Set callback for appmessage events
 Pebble.addEventListener("appmessage",
                         function(e) {
-                            console.log("Appmessage received.");
-                            console.log(JSON.stringify(e.payload.ID));
+                            console.log("appmessage: id" + JSON.stringify(e.payload.ID));
                             if (e.payload){
-                                console.log(JSON.stringify(e.payload.ID));
                                 cloud_to_pebble(e.payload.ID);
+                                
                             }
                         }
 );
