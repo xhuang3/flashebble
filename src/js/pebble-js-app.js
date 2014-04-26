@@ -66,9 +66,6 @@ function cloud_to_pebble(id) {
 // Set callback for the app ready event
 Pebble.addEventListener("ready",
                         function(e) {
-                          console.log("Ready.");
-                          var dict = {"TITLE_KEY":"SAT 101", "CONTENT_KEY":"Welcome to Flashebble!"};
-                          Pebble.sendAppMessage(dict);
                         });
 
 // Set callback for appmessage events

@@ -1,2 +1,2 @@
-static TextLayer *menu_sat;
-static TextLayer *menu_gre;
+static MenuLayer* mainMenu;
+void showDetail(MenuIndex* index);
