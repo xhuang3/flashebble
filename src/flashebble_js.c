@@ -20,6 +20,7 @@ static char title_buffer[TITLE_SIZE];
 static char content_buffer[CONTENT_SIZE];
 bool front = false;
 bool menu = false;
+bool title_screen = true;
 static int id;
 static int deck_id = 0;
 
@@ -100,6 +101,7 @@ void in_dropped_handler(AppMessageResult reason, void *context) {
 // Buttons
 void up_click_handler(ClickRecognizerRef recognizer, void *context)
 {
+    title_screen = false;
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     
@@ -114,6 +116,7 @@ void up_click_handler(ClickRecognizerRef recognizer, void *context)
 
 void down_click_handler(ClickRecognizerRef recognizer, void *context)
 {
+    title_screen = false;
     DictionaryIterator *iter;
     app_message_outbox_begin(&iter);
     
@@ -129,7 +132,7 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
 void select_click_handler(ClickRecognizerRef recognizer, void *context)
 {
     // TODO: make a menu
-    
+    title_screen = false;
     window_stack_push(mwindow, true);
 }
 
@@ -154,6 +157,8 @@ void click_config_provider_menu(void *context)
 // Shakes
 
 void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+    if(!title_screen)
+    {
     text_layer_set_text(title_layer, (char*) &title_buffer);
     text_layer_set_text(content_layer, (char*) &content_buffer);
     layer_set_hidden((Layer*)content_layer, false);
@@ -161,8 +166,8 @@ void accel_tap_handler(AccelAxisType axis, int32_t direction) {
     layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //will turn off the layer
     layer_set_hidden((Layer*)title_layer, false);
     vibes_double_pulse();
+    }
 }
-
 
 
 
