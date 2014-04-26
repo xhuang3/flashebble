@@ -1,11 +1,17 @@
 #include <pebble.h>
 
+
+// Variables
 static Window *window;
 static TextLayer *title_layer;
 static TextLayer *content_layer;
 static char title_buffer[64];
 static char content_buffer[64];
 
+
+
+
+// Communication
 enum {
   TITLE_KEY = 0,
   CONTENT_KEY = 1,
@@ -71,6 +77,48 @@ void in_dropped_handler(AppMessageResult reason, void *context) {
 }
 
 
+
+// Buttons
+void up_click_handler(ClickRecognizerRef recognizer, void *context)
+{
+  text_layer_set_text(title_layer, "You pressed UP!");
+  text_layer_set_text(content_layer, "");
+}
+ 
+void down_click_handler(ClickRecognizerRef recognizer, void *context)
+{
+  text_layer_set_text(title_layer, "You pressed DOWN!");
+  text_layer_set_text(content_layer, "");
+}
+ 
+void select_click_handler(ClickRecognizerRef recognizer, void *context)
+{
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  
+  Tuplet value = TupletInteger(2, 42);
+  dict_write_tuplet(iter, &value);
+  
+  app_message_outbox_send();
+}
+
+void click_config_provider(void *context)
+{
+    window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
+    window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
+    window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
+}
+
+
+
+// Shakes
+
+
+
+
+
+
+// Set up
 static TextLayer* init_text_layer(GRect location, GColor colour, GColor background, const char *res_id, GTextAlignment alignment)
 {
   TextLayer *layer = text_layer_create(location);
@@ -119,7 +167,14 @@ static void init(void) {
   
   */
   app_message_register_inbox_received(in_received_handler);
+  app_message_register_inbox_dropped(in_dropped_handler);
+  
+  app_message_register_outbox_failed(out_failed_handler);
   app_message_open(512, 512);
+  
+  
+  
+  window_set_click_config_provider(window, click_config_provider);
   const bool animated = true;
   window_stack_push(window, animated);
 }
