@@ -73,8 +73,8 @@ function get_cards() {
             login_obj = JSON.parse(req.responseText);
             console.log(req.responseText);
             for(var i = 0 ; i < login_obj.length; i++){
-                if(login_obj[i].deckname == "SAT")SAT_Vocabs.push([login_obj[i].title, login_obj[i].content]);
-                if(login_obj[i].deckname == "GRE")GRE_Vocabs.push([login_obj[i].title, login_obj[i].content]);
+                if(login_obj[i].deckname == "SAT") SAT_Vocabs.push([login_obj[i].title, login_obj[i].content]);
+                if(login_obj[i].deckname == "GRE") GRE_Vocabs.push([login_obj[i].title, login_obj[i].content]);
             }
         }   
     }
