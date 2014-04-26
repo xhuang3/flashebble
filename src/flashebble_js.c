@@ -1,7 +1,7 @@
 #include <pebble.h>
 
-#define TITLE_SIZE 64
-#define CONTENT_SIZE 128
+#define TITLE_SIZE 128
+#define CONTENT_SIZE 256
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_MENU_0 2
@@ -57,7 +57,7 @@ static void menu_select_callback(int index, void *ctx) {
 void process_tuple(Tuple *t){
     int key = t -> key;
     int value = t -> value->int32;
-    char string_value[128];
+    char string_value[CONTENT_SIZE];
     strcpy(string_value, t->value->cstring);
     
     switch(key) {
@@ -101,6 +101,15 @@ void in_received_handler(DictionaryIterator *iter, void *context) {
 
 void in_dropped_handler(AppMessageResult reason, void *context) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Dropped!");
+     DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    
+    // doesn't matter what to send, just trigger the callback
+    Tuplet value = TupletInteger(2, id);
+    Tuplet value2 = TupletInteger(3, deck_id);
+    dict_write_tuplet(iter, &value);
+    dict_write_tuplet(iter, &value2);
+    app_message_outbox_send();
 }
 
 

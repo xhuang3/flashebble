@@ -26,41 +26,10 @@
 var deck_Num = 0;
 
 var SAT_Vocabs = [
-    ["Abhor", "hate"],
-    ["Bigot", "narrow-minded"],
-    ["Counterfeit", "fake; false"],
-    ["Enfranchise", "give voting rights"],
-    ["Hamper", "hinder; obstruct"],
-    ["Kindle", "to start a fire"],
-    ["Noxious", "harmful; poisonous; lethal"],
-    ["Placid", "calm; peaceful"],
-    ["Remuneration", "payment for work done"],
-    ["Talisman", "lucky charm"],
-    
-    ["Abrasive", "wough; coarse; harsh"],
-    ["Bilk", "cheat; defraud"],
-    ["Convert", "hidden; undercover"],
-    ["Engender", "storage area for a plane"],
-    ["Knotty", "complex; difficult to solve"],
-    ["Nuance", "something subtle"],
-    ["Plagiarism", "taking credit for someone's ideas"],
-    ["Renown", "fame"],
-    ["Tangent", "Tangent"]
-
 ];
 
 
 var GRE_Vocabs = [
-    ["Greword1", "hate"],
-    ["Greword2", "narrow-minded"],
-    ["Greword3", "fake; false"],
-    ["Greword4", "give voting rights"],
-    ["Greword5", "hinder; obstruct"],
-    ["Greword6", "to start a fire"],
-    ["Greword7", "harmful; poisonous; lethal"],
-    ["Greword8", "calm; peaceful"],
-    ["Greword9", "payment for work done"],
-    ["Greword10", "lucky charm"],
 ];
 
 var notes = [
@@ -83,9 +52,8 @@ function login_user(){
         if(req.readyState == 4){
             login_obj = JSON.parse(req.responseText);
             id = login_obj.id;
-            console.log(id);
-            console.log("getting cards");
-            get_cards()
+            //get_decks();
+            get_cards();
         }   
     }
     return req.responseText;
@@ -96,14 +64,33 @@ function get_cards() {
     console.log("start getting cards");
     var req = new XMLHttpRequest();
     req.open("GET", url + "cards", true);
-    var cookieString = "id=" + id;
+    var cookieString = "sid=" + id;
     console.log(cookieString);
     req.setRequestHeader('Cookie', cookieString);
-    req.setRequestHeader('deckid', cookieString);
     req.onreadystatechange = function () {
         console.log("get_cards: ready state "+req.readyState);
         if(req.readyState == 4){
-            //login_obj = JSON.parse(req.responseText);
+            login_obj = JSON.parse(req.responseText);
+            console.log(req.responseText);
+            for(var i = 0 ; i < login_obj.length; i++){
+                if(login_obj[i].deckname == "SAT") SAT_Vocabs.push([login_obj[i].title, login_obj[i].content]);
+                if(login_obj[i].deckname == "GRE") GRE_Vocabs.push([login_obj[i].title, login_obj[i].content]);
+            }
+        }   
+    }
+    req.send();
+}
+
+function get_decks() {
+    console.log("start getting decks");
+    var req = new XMLHttpRequest();
+    req.open("GET", url + "decks", true);
+    var cookieString = "sid=" + id;
+    console.log(cookieString);
+    req.setRequestHeader('Cookie', cookieString);
+    req.onreadystatechange = function () {
+        if(req.readyState == 4){
+            login_obj = JSON.parse(req.responseText);
             console.log(req.responseText);
         }   
     }
@@ -130,7 +117,7 @@ function cloud_to_pebble(id) {
 Pebble.addEventListener("ready",
                         function(e) {
                             console.log("Ready: start login\n");
-                            //login_user();
+                            login_user();
                         });
 
 // Set callback for appmessage events
