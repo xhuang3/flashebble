@@ -182,8 +182,7 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
 void window_load(Window *window)
 {
     /* did not touch this code because it is used for the word page */
-    title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
-    text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
+    title_big_layer = init_text_layer(GRect(5, 56, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
     layer_set_hidden((Layer*)title_big_layer, true);
     
