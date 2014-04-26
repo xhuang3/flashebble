@@ -27,6 +27,13 @@ static int deck_id = 0;
 static BitmapLayer *image_layer;
 static GBitmap *image;
 
+//for action bar
+ActionBarLayer *action_bar;
+static GBitmap *icon_top;
+static GBitmap *icon_middle;
+static GBitmap *icon_bottom;
+
+
 // Communication
 enum {
     TITLE_KEY = 0,
@@ -48,6 +55,7 @@ static void menu_select_callback(int index, void *ctx) {
     window_stack_pop(true);
 }
 void process_tuple(Tuple *t){
+<<<<<<< HEAD
     int key = t -> key;
     int value = t -> value->int32;
     char string_value[128];
@@ -66,6 +74,28 @@ void process_tuple(Tuple *t){
             snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
             break;
     }
+=======
+  int key = t -> key;
+  int value = t -> value->int32;
+  char string_value[128];
+  strcpy(string_value, t->value->cstring);
+  
+  switch(key) {
+    case TITLE_KEY:
+      snprintf(title_buffer, TITLE_SIZE, " - %s - ", string_value);
+      text_layer_set_text(title_big_layer, (char*) &title_buffer);
+      layer_set_hidden((Layer*)content_layer, true);
+      layer_set_hidden((Layer*)title_layer, true);
+      layer_set_hidden((Layer*)title_big_layer, false);
+      layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //also will hide the layer idk why it works
+      layer_set_hidden(action_bar_layer_get_layer(action_bar), false);
+
+      break;
+    case CONTENT_KEY:
+      snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
+      break;
+  }
+>>>>>>> added_ui_ques
 }
 
 void out_sent_handler(DictionaryIterator *iter, void *context) {
@@ -154,6 +184,7 @@ void click_config_provider_menu(void *context)
 // Shakes
 
 void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+<<<<<<< HEAD
     text_layer_set_text(title_layer, (char*) &title_buffer);
     text_layer_set_text(content_layer, (char*) &content_buffer);
     layer_set_hidden((Layer*)content_layer, false);
@@ -161,6 +192,16 @@ void accel_tap_handler(AccelAxisType axis, int32_t direction) {
     layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //will turn off the layer
     layer_set_hidden((Layer*)title_layer, false);
     vibes_double_pulse();
+=======
+  text_layer_set_text(title_layer, (char*) &title_buffer);
+  text_layer_set_text(content_layer, (char*) &content_buffer);
+  layer_set_hidden((Layer*)content_layer, false);
+  layer_set_hidden((Layer*)title_big_layer, true);
+  layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //will turn off the layer
+  layer_set_hidden((Layer*)title_layer, false);
+  layer_set_hidden(action_bar_layer_get_layer(action_bar), false);
+  vibes_double_pulse();
+>>>>>>> added_ui_ques
 }
 
 
@@ -181,6 +222,7 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
 
 void window_load(Window *window)
 {
+<<<<<<< HEAD
     /* did not touch this code because it is used for the word page */
     title_big_layer = init_text_layer(GRect(5, 56, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
@@ -200,6 +242,45 @@ void window_load(Window *window)
     
     content_layer = init_text_layer(GRect(5, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(content_layer));
+=======
+  /* did not touch this code because it is used for the word page */
+  title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
+  text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
+  layer_set_hidden((Layer*)title_big_layer, true);
+
+  /* This will create the image_layer and apply it to the window */
+  Layer *window_layer = window_get_root_layer(window);
+  GRect bounds = layer_get_bounds(window_layer);
+  image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
+  image_layer = bitmap_layer_create(bounds);
+  bitmap_layer_set_bitmap(image_layer, image);
+  bitmap_layer_set_alignment(image_layer, GAlignCenter);
+  layer_add_child(window_layer, bitmap_layer_get_layer(image_layer));
+
+  //get the icons
+  icon_top = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACK);
+  icon_middle = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT);
+  icon_bottom = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT);
+
+  // Initialize the action bar:
+  action_bar = action_bar_layer_create();
+  // Associate the action bar with the window:
+  action_bar_layer_add_to_window(action_bar, window);
+  // Set the click config provider:
+  action_bar_layer_set_click_config_provider(action_bar, click_config_provider);
+  // Set the icons:
+  // The loading the icons is omitted for brevity... See HeapBitmap.
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_UP, icon_top);
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, icon_bottom);
+  layer_set_hidden(action_bar_layer_get_layer(action_bar), true);
+  
+  title_layer = init_text_layer(GRect(-15, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
+  
+  content_layer = init_text_layer(GRect(-15, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(content_layer));
+>>>>>>> added_ui_ques
 }
 
 void window_unload(Window *window){
@@ -245,6 +326,7 @@ void mwindow_unload(Window *menu_win)
 
 
 static void init(void) {
+<<<<<<< HEAD
     window = window_create();
     id = 0;
     WindowHandlers handlers = {
@@ -273,6 +355,28 @@ static void init(void) {
     accel_tap_service_subscribe(&accel_tap_handler);
     const bool animated = true;
     window_stack_push(window, animated);
+=======
+  window = window_create();
+  id = 0;
+  WindowHandlers handlers = {
+    .load = window_load,
+    .unload = window_unload
+  };
+  window_set_window_handlers(window, handlers);
+
+  app_message_register_inbox_received(in_received_handler);
+  app_message_register_inbox_dropped(in_dropped_handler);
+  
+  app_message_register_outbox_failed(out_failed_handler);
+  app_message_open(TITLE_SIZE, CONTENT_SIZE);
+  
+  
+  //removed for action bar
+  //window_set_click_config_provider(window, click_config_provider);
+  accel_tap_service_subscribe(&accel_tap_handler);
+  const bool animated = true;
+  window_stack_push(window, animated);
+>>>>>>> added_ui_ques
 }
 
 static void deinit(void) {
@@ -280,6 +384,8 @@ static void deinit(void) {
     window_destroy(window);
     window_destroy(mwindow);
 }
+
+
 
 int main(void) {
     init();
