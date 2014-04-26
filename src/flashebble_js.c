@@ -13,6 +13,9 @@ bool front = false;
 static int id;
 
 
+//added for logo
+static BitmapLayer *image_layer;
+static GBitmap *image;
 
 // Communication
 enum {
@@ -33,6 +36,7 @@ void process_tuple(Tuple *t){
       layer_set_hidden((Layer*)content_layer, true);
       layer_set_hidden((Layer*)title_layer, true);
       layer_set_hidden((Layer*)title_big_layer, false);
+      layer_set_hidden((Layer*)image_layer, true);
       break;
     case CONTENT_KEY:
       snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
@@ -115,6 +119,7 @@ void accel_tap_handler(AccelAxisType axis, int32_t direction) {
   text_layer_set_text(content_layer, (char*) &content_buffer);
   layer_set_hidden((Layer*)content_layer, false);
   layer_set_hidden((Layer*)title_big_layer, true);
+  layer_set_hidden((Layer*)image_layer, true);
   layer_set_hidden((Layer*)title_layer, false);
   vibes_double_pulse();
 }
@@ -137,9 +142,20 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
 
 void window_load(Window *window)
 {
+
   title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
   text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
+  layer_set_hidden((Layer*)title_big_layer, true);
+
+  Layer *window_layer = window_get_root_layer(window);
+  GRect bounds = layer_get_bounds(window_layer);
+  //added
+  image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
+  image_layer = bitmap_layer_create(bounds);
+  bitmap_layer_set_bitmap(image_layer, image);
+  bitmap_layer_set_alignment(image_layer, GAlignCenter);
+  layer_add_child(window_layer, bitmap_layer_get_layer(image_layer));
   
   title_layer = init_text_layer(GRect(5, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
