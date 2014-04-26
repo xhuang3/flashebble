@@ -47,6 +47,7 @@ var vocabs = [
 
 ];
 
+
 var notes = [
     ["Page1", "This is a reminder for XXXX"]
 ]
@@ -57,6 +58,7 @@ var login_obj;
 var id;
 var url = "http://fengpanhome.com:8080/";
 var deckid = "17b94e854f64886d";
+var userid = "ef118643c72b0b73";
 
 function login_user(){
     var req = new XMLHttpRequest();
@@ -79,16 +81,33 @@ function login_user(){
 function get_cards() {
     console.log("start getting cards");
     var req = new XMLHttpRequest();
-    req.open("GET", url + "cards", true);
-    var cookieString = "id=" + id;
-    console.log(cookieString);
-    req.setRequestHeader('Cookie', cookieString);
-    req.setRequestHeader('deckid', cookieString);
+    req.open("POST", url + "decks", true);
+    
+    var cookie2 = JSON.stringify([
+{
+    "domain": "fengpanhome.com:8080",
+    "hostOnly": true,
+    "httpOnly": true,
+    "name": "sid",
+    "path": "decks",
+    "secure": false,
+    "session": true,
+    "storeId": "0",
+    "userid" : "ef118643c72b0b73",
+    "value": "650e6bda7744716c129515a7c47a94a915fe070ef1fb3a1f8fef486f319ce93092c8b3cee0a2cfdf79c5a7a332552cabcba92d1172863598a871abe2632388f5",
+    "id": 1
+}
+]);
+    var cookie = "hostOnly=true&httpOnly=true&secure=false&session=true&name=sid&userid=ef118643c72b0b73&value=650e6bda7744716c129515a7c47a94a915fe070ef1fb3a1f8fef486f319ce93092c8b3cee0a2cfdf79c5a7a332552cabcba92d1172863598a871abe2632388f5"
+    
+    console.log(cookie);
+    
     req.onreadystatechange = function () {
         console.log("get_cards: ready state "+req.readyState);
         if(req.readyState == 4){
-            //login_obj = JSON.parse(req.responseText);
+            //var cards = JSON.parse(req.responseText);
             console.log(req.responseText);
+            //console.log("Here: " + cards);
         }   
     }
     req.send();
