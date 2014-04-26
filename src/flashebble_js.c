@@ -21,7 +21,7 @@ static char content_buffer[CONTENT_SIZE];
 bool front = false;
 bool menu = false;
 static int id;
-
+static int selection;
 
 
 // Communication
