@@ -9,7 +9,8 @@
     "watchface": false
   },
   "appKeys": {
-    "dummy": 0
+    "TITLE_KEY": 0,
+    "CONTENT_KEY": 1
   },
   "resources": {
     "media": []
