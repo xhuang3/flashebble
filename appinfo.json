@@ -20,16 +20,6 @@
         "type": "png",
         "name": "IMAGE_LOGO",
         "file": "images/logo.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_NEXT",
-        "file": "images/next.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_BACK",
-        "file": "images/back.png"
       }
     ]
   }
