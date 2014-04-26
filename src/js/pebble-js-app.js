@@ -47,6 +47,10 @@ var vocabs = [
 
 ];
 
+var notes = [
+    ["Page1", "This is a reminder for XXXX"]
+]
+
 function HTTPGET(url) {
     var req = new XMLHttpRequest();
     req.open("GET", url, false);

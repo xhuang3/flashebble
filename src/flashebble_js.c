@@ -1,13 +1,14 @@
 #include <pebble.h>
 
-
+#define TITLE_SIZE 64
+#define CONTENT_SIZE 128
 // Variables
 static Window *window;
 static TextLayer *title_big_layer;
 static TextLayer *title_layer;
 static TextLayer *content_layer;
-static char title_buffer[64];
-static char content_buffer[64];
+static char title_buffer[TITLE_SIZE];
+static char content_buffer[CONTENT_SIZE];
 bool front = false;
 static int id;
 
@@ -27,14 +28,14 @@ void process_tuple(Tuple *t){
   
   switch(key) {
     case TITLE_KEY:
-      snprintf(title_buffer, 64, "%s", string_value);
+      snprintf(title_buffer, TITLE_SIZE, "%s", string_value);
       text_layer_set_text(title_big_layer, (char*) &title_buffer);
       layer_set_hidden((Layer*)content_layer, true);
       layer_set_hidden((Layer*)title_layer, true);
       layer_set_hidden((Layer*)title_big_layer, false);
       break;
     case CONTENT_KEY:
-      snprintf(content_buffer, 64, "%s", string_value);
+      snprintf(content_buffer, CONTENT_SIZE, "%s", string_value);
       break;
   }
 }
@@ -135,14 +136,14 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
 
 void window_load(Window *window)
 {
-  title_big_layer = init_text_layer(GRect(5, 60, 144, 90), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
-  text_layer_set_text(title_big_layer, "Welcome to Flashebble!");
+  title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
+  text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
   
-  title_layer = init_text_layer(GRect(5, 0, 144, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentLeft);
+  title_layer = init_text_layer(GRect(5, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentLeft);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
   
-  content_layer = init_text_layer(GRect(5, 30, 144, 90), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentLeft);
+  content_layer = init_text_layer(GRect(5, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentLeft);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(content_layer));
 }
 
@@ -164,7 +165,7 @@ static void init(void) {
   app_message_register_inbox_dropped(in_dropped_handler);
   
   app_message_register_outbox_failed(out_failed_handler);
-  app_message_open(512, 512);
+  app_message_open(TITLE_SIZE, CONTENT_SIZE);
   
   
   
