@@ -113,7 +113,10 @@ void click_config_provider(void *context)
 
 // Shakes
 
-
+void accel_tap_handler(AccelAxisType axis, int32_t direction) {
+  text_layer_set_text(title_layer, "You Shake");
+  text_layer_set_text(content_layer, "shake~~~~");
+}
 
 
 
@@ -175,11 +178,13 @@ static void init(void) {
   
   
   window_set_click_config_provider(window, click_config_provider);
+  accel_tap_service_subscribe(&accel_tap_handler);
   const bool animated = true;
   window_stack_push(window, animated);
 }
 
 static void deinit(void) {
+  accel_tap_service_unsubscribe();
   window_destroy(window);
 }
 
