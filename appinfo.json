@@ -29,6 +29,11 @@
         "type": "png",
         "name": "IMAGE_BACK",
         "file": "images/back.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_MENU",
+        "file": "images/menu.png"
       }
     ]
   }

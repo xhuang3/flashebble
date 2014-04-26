@@ -2,6 +2,8 @@
 
 #define TITLE_SIZE 64
 #define CONTENT_SIZE 128
+#undef ACTION_BAR_WIDTH 
+#define ACTION_BAR_WIDTH 15
 // Variables
 static Window *window;
 static TextLayer *title_big_layer;
@@ -49,6 +51,7 @@ void process_tuple(Tuple *t){
       break;
     case CONTENT_KEY:
       snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
+      snprintf(content_buffer, CONTENT_SIZE, "     ----------------  %s", string_value);
       break;
   }
 }
@@ -154,6 +157,7 @@ void window_load(Window *window)
 {
   /* did not touch this code because it is used for the word page */
   title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
+  title_big_layer = init_text_layer(GRect(-15, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
   text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
   layer_set_hidden((Layer*)title_big_layer, true);
@@ -170,6 +174,7 @@ void window_load(Window *window)
   //get the icons
   icon_top = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACK);
   icon_middle = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT);
+  icon_middle = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENU);
   icon_bottom = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT);
 
   // Initialize the action bar:
@@ -181,10 +186,12 @@ void window_load(Window *window)
   // Set the icons:
   // The loading the icons is omitted for brevity... See HeapBitmap.
   action_bar_layer_set_icon(action_bar, BUTTON_ID_UP, icon_top);
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, icon_middle);
   action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, icon_bottom);
   layer_set_hidden(action_bar_layer_get_layer(action_bar), true);
   
   title_layer = init_text_layer(GRect(-15, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
+  title_layer = init_text_layer(GRect(-14, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
   
   content_layer = init_text_layer(GRect(-15, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
