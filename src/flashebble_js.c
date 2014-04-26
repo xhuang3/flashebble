@@ -184,10 +184,10 @@ void window_load(Window *window)
   action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, icon_bottom);
   layer_set_hidden(action_bar_layer_get_layer(action_bar), true);
   
-  title_layer = init_text_layer(GRect(5, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
+  title_layer = init_text_layer(GRect(-15, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
   
-  content_layer = init_text_layer(GRect(5, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
+  content_layer = init_text_layer(GRect(-15, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(content_layer));
 }
 
