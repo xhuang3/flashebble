@@ -23,30 +23,44 @@
  *
  *
  */
+var deck_Num = 0;
+
 var vocabs = [
-             ["Abhor", "hate"],
-             ["Bigot", "narrow-minded"],
-             ["Counterfeit", "fake; false"],
-             ["Enfranchise", "give voting rights"],
-             ["Hamper", "hinder; obstruct"],
-             ["Kindle", "to start a fire"],
-             ["Noxious", "harmful; poisonous; lethal"],
-             ["Placid", "calm; peaceful"],
-             ["Remuneration", "payment for work done"],
-             ["Talisman", "lucky charm"],
-             
-             ["Abrasive", "wough; coarse; harsh"],
-             ["Bilk", "cheat; defraud"],
-             ["Convert", "hidden; undercover"],
-             ["Engender", "storage area for a plane"],
-             ["Knotty", "complex; difficult to solve"],
-             ["Nuance", "something subtle"],
-             ["Plagiarism", "taking credit for someone's ideas"],
-             ["Renown", "fame"],
-             ["Tangent", "Tangent"]
+    ["Abhor", "hate"],
+    ["Bigot", "narrow-minded"],
+    ["Counterfeit", "fake; false"],
+    ["Enfranchise", "give voting rights"],
+    ["Hamper", "hinder; obstruct"],
+    ["Kindle", "to start a fire"],
+    ["Noxious", "harmful; poisonous; lethal"],
+    ["Placid", "calm; peaceful"],
+    ["Remuneration", "payment for work done"],
+    ["Talisman", "lucky charm"],
+    
+    ["Abrasive", "wough; coarse; harsh"],
+    ["Bilk", "cheat; defraud"],
+    ["Convert", "hidden; undercover"],
+    ["Engender", "storage area for a plane"],
+    ["Knotty", "complex; difficult to solve"],
+    ["Nuance", "something subtle"],
+    ["Plagiarism", "taking credit for someone's ideas"],
+    ["Renown", "fame"],
+    ["Tangent", "Tangent"]
 
 ];
 
+var GRE_Vocabs = [
+    ["Abhor", "hate"],
+    ["Bigot", "narrow-minded"],
+    ["Counterfeit", "fake; false"],
+    ["Enfranchise", "give voting rights"],
+    ["Hamper", "hinder; obstruct"],
+    ["Kindle", "to start a fire"],
+    ["Noxious", "harmful; poisonous; lethal"],
+    ["Placid", "calm; peaceful"],
+    ["Remuneration", "payment for work done"],
+    ["Talisman", "lucky charm"],
+];
 
 var notes = [
     ["Page1", "This is a reminder for XXXX"]
@@ -125,8 +139,7 @@ function cloud_to_pebble(id) {
 Pebble.addEventListener("ready",
                         function(e) {
                             console.log("Ready: start login\n");
-                            login_user();
-                            
+                            //login_user();
                         });
 
 // Set callback for appmessage events
@@ -135,7 +148,6 @@ Pebble.addEventListener("appmessage",
                             console.log("appmessage: id" + JSON.stringify(e.payload.ID));
                             if (e.payload){
                                 cloud_to_pebble(e.payload.ID);
-                                
                             }
                         }
 );
