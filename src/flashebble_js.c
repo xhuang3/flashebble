@@ -17,6 +17,13 @@ static int id;
 static BitmapLayer *image_layer;
 static GBitmap *image;
 
+//for action bar
+ActionBarLayer *action_bar;
+static GBitmap *icon_top;
+static GBitmap *icon_middle;
+static GBitmap *icon_bottom;
+
+
 // Communication
 enum {
   TITLE_KEY = 0,
@@ -37,6 +44,8 @@ void process_tuple(Tuple *t){
       layer_set_hidden((Layer*)title_layer, true);
       layer_set_hidden((Layer*)title_big_layer, false);
       layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //also will hide the layer idk why it works
+      layer_set_hidden(action_bar_layer_get_layer(action_bar), false);
+
       break;
     case CONTENT_KEY:
       snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
@@ -121,6 +130,7 @@ void accel_tap_handler(AccelAxisType axis, int32_t direction) {
   layer_set_hidden((Layer*)title_big_layer, true);
   layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //will turn off the layer
   layer_set_hidden((Layer*)title_layer, false);
+  layer_set_hidden(action_bar_layer_get_layer(action_bar), false);
   vibes_double_pulse();
 }
 
@@ -156,6 +166,23 @@ void window_load(Window *window)
   bitmap_layer_set_bitmap(image_layer, image);
   bitmap_layer_set_alignment(image_layer, GAlignCenter);
   layer_add_child(window_layer, bitmap_layer_get_layer(image_layer));
+
+  //get the icons
+  icon_top = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACK);
+  icon_middle = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT);
+  icon_bottom = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NEXT);
+
+  // Initialize the action bar:
+  action_bar = action_bar_layer_create();
+  // Associate the action bar with the window:
+  action_bar_layer_add_to_window(action_bar, window);
+  // Set the click config provider:
+  action_bar_layer_set_click_config_provider(action_bar, click_config_provider);
+  // Set the icons:
+  // The loading the icons is omitted for brevity... See HeapBitmap.
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_UP, icon_top);
+  action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, icon_bottom);
+  layer_set_hidden(action_bar_layer_get_layer(action_bar), true);
   
   title_layer = init_text_layer(GRect(5, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
@@ -186,8 +213,8 @@ static void init(void) {
   app_message_open(TITLE_SIZE, CONTENT_SIZE);
   
   
-  
-  window_set_click_config_provider(window, click_config_provider);
+  //removed for action bar
+  //window_set_click_config_provider(window, click_config_provider);
   accel_tap_service_subscribe(&accel_tap_handler);
   const bool animated = true;
   window_stack_push(window, animated);
@@ -197,6 +224,8 @@ static void deinit(void) {
   accel_tap_service_unsubscribe();
   window_destroy(window);
 }
+
+
 
 int main(void) {
   init();
