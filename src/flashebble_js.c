@@ -7,7 +7,8 @@ static TextLayer *title_layer;
 static TextLayer *content_layer;
 static char title_buffer[64];
 static char content_buffer[64];
-
+bool front = false;
+static int id;
 
 
 
@@ -25,36 +26,22 @@ void process_tuple(Tuple *t){
   
   switch(key) {
     case TITLE_KEY:
-      snprintf(title_buffer, sizeof("Location: couldbereallylongname"), "%s", string_value);
+      snprintf(title_buffer, 64, "%s", string_value);
       text_layer_set_text(title_layer, (char*) &title_buffer);
+      text_layer_set_text(content_layer, "");
       break;
     case CONTENT_KEY:
-      snprintf(content_buffer, sizeof("Location: couldbereallylongname"), "%s", string_value);
-      text_layer_set_text(content_layer, (char*) &content_buffer);
+      snprintf(content_buffer, 64, "%s", string_value);
       break;
   }
 }
 
 void out_sent_handler(DictionaryIterator *iter, void *context) {
-  Tuple *t = dict_read_first(iter);
-  if(t){
-    process_tuple(t);
-  }
-  
-  while(t != NULL){
-    t = dict_read_next(iter);
-    if(t)
-    {
-      process_tuple(t);
-    }
-  }
-  // outgoing message delivered
 }
 
 
 void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "App Message Failed to Send!");
-  // outgoing message delivered
 }
 
 void in_received_handler(DictionaryIterator *iter, void *context) {
@@ -81,25 +68,31 @@ void in_dropped_handler(AppMessageResult reason, void *context) {
 // Buttons
 void up_click_handler(ClickRecognizerRef recognizer, void *context)
 {
-  text_layer_set_text(title_layer, "You pressed UP!");
-  text_layer_set_text(content_layer, "");
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  
+  // doesn't matter what to send, just trigger the callback
+  Tuplet value = TupletInteger(2, id);
+  dict_write_tuplet(iter, &value);
+  if(id > 0) id--;
+  app_message_outbox_send();
 }
  
 void down_click_handler(ClickRecognizerRef recognizer, void *context)
 {
-  text_layer_set_text(title_layer, "You pressed DOWN!");
-  text_layer_set_text(content_layer, "");
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  
+  // doesn't matter what to send, just trigger the callback
+  Tuplet value = TupletInteger(2, id);
+  dict_write_tuplet(iter, &value);
+  id++;
+  app_message_outbox_send();
 }
  
 void select_click_handler(ClickRecognizerRef recognizer, void *context)
 {
-  DictionaryIterator *iter;
-  app_message_outbox_begin(&iter);
-  
-  Tuplet value = TupletInteger(2, 42);
-  dict_write_tuplet(iter, &value);
-  
-  app_message_outbox_send();
+  // TODO: make a menu
 }
 
 void click_config_provider(void *context)
@@ -114,8 +107,7 @@ void click_config_provider(void *context)
 // Shakes
 
 void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-  text_layer_set_text(title_layer, "You Shake");
-  text_layer_set_text(content_layer, "shake~~~~");
+  text_layer_set_text(content_layer, (char*) &content_buffer);
 }
 
 
@@ -129,6 +121,7 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
   text_layer_set_background_color(layer, background);
   text_layer_set_font(layer, fonts_get_system_font(res_id));
   text_layer_set_text_alignment(layer, alignment);
+  text_layer_set_overflow_mode(layer, GTextOverflowModeWordWrap);
  
   return layer;
 }
@@ -151,24 +144,13 @@ void window_unload(Window *window){
 
 static void init(void) {
   window = window_create();
+  id = 0;
   WindowHandlers handlers = {
     .load = window_load,
     .unload = window_unload
   };
   window_set_window_handlers(window, handlers);
-  /**
-  app_message_register_inbox_received(in_received_handler);
-  app_message_register_inbox_dropped(in_dropped_handler);
-  app_message_register_outbox_sent(out_sent_handler);
-  app_message_register_outbox_failed(out_failed_handler);
-  
-  const uint32_t inbound_size = 64;
-  const uint32_t outbound_size = 64;
-  app_message_open(inbound_size, outbound_size);
-  
-  fetch_msg();
-  
-  */
+
   app_message_register_inbox_received(in_received_handler);
   app_message_register_inbox_dropped(in_dropped_handler);
   
