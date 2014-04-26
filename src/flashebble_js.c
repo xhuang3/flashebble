@@ -36,7 +36,7 @@ void process_tuple(Tuple *t){
       layer_set_hidden((Layer*)content_layer, true);
       layer_set_hidden((Layer*)title_layer, true);
       layer_set_hidden((Layer*)title_big_layer, false);
-      layer_set_hidden((Layer*)image_layer, true);
+      layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //also will hide the layer idk why it works
       break;
     case CONTENT_KEY:
       snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
@@ -119,7 +119,7 @@ void accel_tap_handler(AccelAxisType axis, int32_t direction) {
   text_layer_set_text(content_layer, (char*) &content_buffer);
   layer_set_hidden((Layer*)content_layer, false);
   layer_set_hidden((Layer*)title_big_layer, true);
-  layer_set_hidden((Layer*)image_layer, true);
+  layer_set_hidden(bitmap_layer_get_layer(image_layer), true); //will turn off the layer
   layer_set_hidden((Layer*)title_layer, false);
   vibes_double_pulse();
 }
@@ -142,15 +142,15 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
 
 void window_load(Window *window)
 {
-
+  /* did not touch this code because it is used for the word page */
   title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
   text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
   layer_set_hidden((Layer*)title_big_layer, true);
 
+  /* This will create the image_layer and apply it to the window */
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
-  //added
   image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_LOGO);
   image_layer = bitmap_layer_create(bounds);
   bitmap_layer_set_bitmap(image_layer, image);
@@ -167,6 +167,7 @@ void window_load(Window *window)
 void window_unload(Window *window){
   text_layer_destroy(title_layer);
   text_layer_destroy(content_layer);
+  bitmap_layer_destroy(image_layer); //remove logo layer
 }
 
 static void init(void) {
