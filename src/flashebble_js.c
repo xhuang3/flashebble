@@ -37,22 +37,24 @@ static void menu_select_callback(int index, void *ctx) {
 
 
 void process_tuple(Tuple *t){
-    int key = t -> key;
-    char string_value[32];
-    strcpy(string_value, t->value->cstring);
-    
-    switch(key) {
-        case TITLE_KEY:
-            snprintf(title_buffer, TITLE_SIZE, "%s", string_value);
-            text_layer_set_text(title_big_layer, (char*) &title_buffer);
-            layer_set_hidden((Layer*)content_layer, true);
-            layer_set_hidden((Layer*)title_layer, true);
-            layer_set_hidden((Layer*)title_big_layer, false);
-            break;
-        case CONTENT_KEY:
-            snprintf(content_buffer, CONTENT_SIZE, "%s", string_value);
-            break;
-    }
+
+  int key = t -> key;
+  int value = t -> value->int32;
+  char string_value[128];
+  strcpy(string_value, t->value->cstring);
+  
+  switch(key) {
+    case TITLE_KEY:
+      snprintf(title_buffer, TITLE_SIZE, " - %s - ", string_value);
+      text_layer_set_text(title_big_layer, (char*) &title_buffer);
+      layer_set_hidden((Layer*)content_layer, true);
+      layer_set_hidden((Layer*)title_layer, true);
+      layer_set_hidden((Layer*)title_big_layer, false);
+      break;
+    case CONTENT_KEY:
+      snprintf(content_buffer, CONTENT_SIZE, "---------------------- %s", string_value);
+      break;
+  }
 }
 
 void out_sent_handler(DictionaryIterator *iter, void *context) {
@@ -135,11 +137,12 @@ void click_config_provider_menu(void *context)
 // Shakes
 
 void accel_tap_handler(AccelAxisType axis, int32_t direction) {
-    text_layer_set_text(title_layer, (char*) &title_buffer);
-    text_layer_set_text(content_layer, (char*) &content_buffer);
-    layer_set_hidden((Layer*)content_layer, false);
-    layer_set_hidden((Layer*)title_big_layer, true);
-    layer_set_hidden((Layer*)title_layer, false);
+  text_layer_set_text(title_layer, (char*) &title_buffer);
+  text_layer_set_text(content_layer, (char*) &content_buffer);
+  layer_set_hidden((Layer*)content_layer, false);
+  layer_set_hidden((Layer*)title_big_layer, true);
+  layer_set_hidden((Layer*)title_layer, false);
+  vibes_double_pulse();
 }
 
 
@@ -160,16 +163,15 @@ static TextLayer* init_text_layer(GRect location, GColor colour, GColor backgrou
 
 void window_load(Window *window)
 {
-    title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
-    text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
-    layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
-    
-    title_layer = init_text_layer(GRect(5, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentLeft);
-    layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
-    
-    content_layer = init_text_layer(GRect(5, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentLeft);
-    layer_add_child(window_get_root_layer(window), text_layer_get_layer(content_layer));
-    
+  title_big_layer = init_text_layer(GRect(5, 0, 134, 168), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_24_BOLD", GTextAlignmentCenter);
+  text_layer_set_text(title_big_layer, "<< ^_^ >> ============= Welcome to Flashebble! =============");
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_big_layer));
+  
+  title_layer = init_text_layer(GRect(5, 0, 134, 30), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18_BOLD", GTextAlignmentCenter);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(title_layer));
+  
+  content_layer = init_text_layer(GRect(5, 30, 134, 138), GColorBlack, GColorClear, "RESOURCE_ID_GOTHIC_18", GTextAlignmentCenter);
+  layer_add_child(window_get_root_layer(window), text_layer_get_layer(content_layer));
 }
 
 void window_unload(Window *window){
