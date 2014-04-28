@@ -40,7 +40,7 @@ var username = "test";
 var password = "123456";
 var login_obj;
 var id;
-var url = "http://fengpanhome.com:8080/";
+var url = "http://flashebble.fengpanhome.com";
 var deckid = "17b94e854f64886d";
 
 function login_user(){
